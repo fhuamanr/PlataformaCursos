@@ -64,7 +64,7 @@ python manage.py runserver
 
 Accede a la aplicación en tu navegador en http://127.0.0.1:8000.
 
-###Funcionalidades
+Funcionalidades
 
 	•	Registro de usuarios
 	•	Iniciar sesión y cerrar sesión
@@ -91,7 +91,7 @@ plataforma_cursos/
 └── README.md                 # Este archivo con instrucciones
 ```
 
-###Notas
+Notas
 
 	•	Panel de Administración: Accede al panel de administración en http://127.0.0.1:8000/admin/ con el superusuario que creaste.
 	•	Modificaciones a la configuración: Puedes ajustar la configuración de la base de datos o cualquier otro parámetro en plataforma_cursos/settings.py.
