@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load form_filters %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .register-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container col-md-4">
+        <h2 class="text-center">Registro de Usuario</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.username.label_tag }}  <!-- Muestra el label del campo -->
+                {{ form.username|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+            </div>
+            <div class="mb-3">
+                {{ form.email.label_tag }}  <!-- Muestra el label del campo -->
+                {{ form.email|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+            </div>
+            <div class="mb-3">
+                {{ form.first_name.label_tag }}  <!-- Muestra el label del campo -->
+                {{ form.first_name|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+            </div>
+            <div class="mb-3">
+                {{ form.last_name.label_tag }}  <!-- Muestra el label del campo -->
+                {{ form.last_name|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+            </div>
+            <div class="mb-3">
+                {{ form.password1.label_tag }}  <!-- Muestra el label del campo -->
+                {{ form.password1|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+            </div>
+            <div class="mb-3">
+                {{ form.password2.label_tag }}  <!-- Muestra el label del campo -->
+                {{ form.password2|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

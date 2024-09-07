@@ -1,0 +1,17 @@
+<h1>{{ curso.nombre }}</h1>
+<p>Páginas visitadas: {{ progreso.paginas_visitadas }} / {{ curso.total_paginas }}</p>
+<p>Checks alcanzados: {{ progreso.checks_alcanzados }}</p>
+<p>Examen realizado: {{ progreso.examen_realizado }}</p>
+<p>Resultado del examen: {{ progreso.resultado_examen }}</p>
+<p>Avance total: {{ progreso.avance_total }}</p>
+
+<form method="post" action="{% url 'actualizar_progreso' curso.id %}">
+    {% csrf_token %}
+    <label for="paginas_visitadas">Páginas Visitadas:</label>
+    <input type="number" name="paginas_visitadas" id="paginas_visitadas" value="{{ progreso.paginas_visitadas }}">
+    <label for="checks_alcanzados">Checks Alcanzados:</label>
+    <input type="number" name="checks_alcanzados" id="checks_alcanzados" value="{{ progreso.checks_alcanzados }}">
+    <label for="resultado_examen">Resultado del Examen:</label>
+    <input type="number" name="resultado_examen" id="resultado_examen" value="{{ progreso.resultado_examen }}">
+    <button type="submit">Actualizar Progreso</button>
+</form>
