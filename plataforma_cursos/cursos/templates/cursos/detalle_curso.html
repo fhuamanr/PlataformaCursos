@@ -1,17 +1,48 @@
-<h1>{{ curso.nombre }}</h1>
-<p>Páginas visitadas: {{ progreso.paginas_visitadas }} / {{ curso.total_paginas }}</p>
-<p>Checks alcanzados: {{ progreso.checks_alcanzados }}</p>
-<p>Examen realizado: {{ progreso.examen_realizado }}</p>
-<p>Resultado del examen: {{ progreso.resultado_examen }}</p>
-<p>Avance total: {{ progreso.avance_total }}</p>
+<!DOCTYPE html>
+{% load form_filters %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Curso</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
 
-<form method="post" action="{% url 'actualizar_progreso' curso.id %}">
-    {% csrf_token %}
-    <label for="paginas_visitadas">Páginas Visitadas:</label>
-    <input type="number" name="paginas_visitadas" id="paginas_visitadas" value="{{ progreso.paginas_visitadas }}">
-    <label for="checks_alcanzados">Checks Alcanzados:</label>
-    <input type="number" name="checks_alcanzados" id="checks_alcanzados" value="{{ progreso.checks_alcanzados }}">
-    <label for="resultado_examen">Resultado del Examen:</label>
-    <input type="number" name="resultado_examen" id="resultado_examen" value="{{ progreso.resultado_examen }}">
-    <button type="submit">Actualizar Progreso</button>
-</form>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <!-- Imagen del curso -->
+                    {% if curso.imagen %}
+                    <img src="{{ curso.imagen.url }}" class="card-img-top" alt="{{ curso.nombre }}" style="height:300px; object-fit:cover;">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Imagen no disponible" style="height:300px; object-fit:cover;">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h2 class="card-title">{{ curso.nombre }}</h2>
+                        <p class="card-text"><strong>Descripción:</strong> {{ curso.descripcion }}</p>
+                        <p class="card-text"><strong>Total de páginas:</strong> {{ curso.total_paginas }}</p>
+
+                        <!-- Mostrar avance del usuario si está disponible -->
+                        {% if progreso %}
+                        <p class="card-text"><strong>Páginas visitadas:</strong> {{ progreso.paginas_visitadas }} / {{ progreso.total_paginas }}</p>
+                        <p class="card-text"><strong>Progreso total:</strong> {{ progreso.avance_total }}%</p>
+                        <p class="card-text"><strong>Resultado del examen:</strong> {{ progreso.resultado_examen|default:"N/A" }}%</p>
+                        {% else %}
+                        <p class="text-danger">No has comenzado este curso todavía.</p>
+                        {% endif %}
+
+                        <a href="{% url 'listado_cursos' %}" class="btn btn-primary">Volver al Listado de Cursos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

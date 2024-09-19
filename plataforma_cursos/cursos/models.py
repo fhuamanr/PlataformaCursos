@@ -42,8 +42,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class Curso(models.Model):
     nombre = models.CharField(max_length=200)
-    descripcion = models.TextField()  
+    descripcion = models.TextField()
     total_paginas = models.IntegerField()
+    imagen = models.ImageField(upload_to='cursos_imagenes/', blank=True, null=True)  # Campo para la imagen
 
     def __str__(self):
         return self.nombre

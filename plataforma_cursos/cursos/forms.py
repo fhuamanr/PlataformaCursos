@@ -11,7 +11,12 @@ class CustomLoginForm(AuthenticationForm):
 class CursoForm(forms.ModelForm):
     class Meta:
         model = Curso
-        fields = ['nombre', 'descripcion', 'total_paginas']
+        fields = ['nombre', 'descripcion', 'total_paginas', 'imagen']
+
+    def __init__(self, *args, **kwargs):
+        super(CursoForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
 
 class UserRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)

@@ -15,19 +15,23 @@
             <div class="col-md-6 offset-md-3">
                 <h2 class="text-center mb-4">Registrar Nuevo Curso</h2>
 
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="mb-3">
-                        {{ form.nombre.label_tag }}
-                        {{ form.nombre|add_class:"form-control" }}
+                        {{ form.nombre.label_tag }}  <!-- El label no necesita add_class -->
+                        {{ form.nombre|add_class:"form-control" }}  <!-- Aplicar add_class al campo -->
                     </div>
                     <div class="mb-3">
-                        {{ form.descripcion.label_tag }}
-                        {{ form.descripcion|add_class:"form-control" }}
+                        {{ form.descripcion.label_tag }}  <!-- El label no necesita add_class -->
+                        {{ form.descripcion|add_class:"form-control" }}  <!-- Aplicar add_class al campo -->
                     </div>
                     <div class="mb-3">
-                        {{ form.total_paginas.label_tag }}
-                        {{ form.total_paginas|add_class:"form-control" }}
+                        {{ form.total_paginas.label_tag }}  <!-- El label no necesita add_class -->
+                        {{ form.total_paginas|add_class:"form-control" }}  <!-- Aplicar add_class al campo -->
+                    </div>
+                    <div class="mb-3">
+                        {{ form.imagen.label_tag }}
+                        {{ form.imagen }}  <!-- El campo de imagen sin filtro -->
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Guardar Curso</button>
                 </form>

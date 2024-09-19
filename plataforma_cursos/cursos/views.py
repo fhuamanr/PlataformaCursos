@@ -33,7 +33,7 @@ def register(request):
 class CursoForm(forms.ModelForm):
     class Meta:
         model = Curso
-        fields = ['nombre', 'descripcion', 'total_paginas']
+        fields = ['nombre', 'descripcion', 'total_paginas', 'imagen']
 
 def registro_curso(request):
     if request.method == 'POST':
@@ -86,8 +86,22 @@ def listado_cursos(request):
 
 @login_required
 def registro_curso(request):
-    form = CursoForm(request.POST or None)
+    form = CursoForm(request.POST, request.FILES) # Incluir request.FILES para manejar imágenes
     if form.is_valid():
         form.save()
         return redirect('listado_cursos')
     return render(request, 'cursos/registro_curso.html', {'form': form})
+
+def detalle_curso(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+    
+    # Obtener el progreso del usuario en este curso, si existe
+    progreso = None
+    if request.user.is_authenticated:
+        progreso = Progreso.objects.filter(usuario=request.user, curso=curso).first()
+
+    context = {
+        'curso': curso,
+        'progreso': progreso,
+    }
+    return render(request, 'cursos/detalle_curso.html', context)

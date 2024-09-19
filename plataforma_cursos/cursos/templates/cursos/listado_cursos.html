@@ -13,21 +13,36 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Listado de Cursos</h2>
-            <!-- Botón para agregar nuevo curso -->
-            <a href="{% url 'registro_curso' %}" class="btn btn-success">Agregar Nuevo Curso</a>
+            <div>
+                <!-- Botón para agregar nuevo curso -->
+                <a href="{% url 'registro_curso' %}" class="btn btn-success">Agregar Nuevo Curso</a>
+                <!-- Botón de logout -->
+                <a href="{% url 'logout' %}" class="btn btn-danger ms-2">Logout</a>
+            </div>
         </div>
 
         <div class="row">
             <!-- Iterar sobre los cursos para crear una card por cada curso -->
             {% for curso in cursos %}
             <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card h-100">
+                    <!-- Imagen del curso -->
+                    {% if curso.imagen %}
+                    <img src="{{ curso.imagen.url }}" class="card-img-top" alt="{{ curso.nombre }}" style="width:150px; height:150px; object-fit:cover; margin:auto;">
+                    {% else %}
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Imagen no disponible" style="width:150px; height:150px; object-fit:cover; margin:auto;">
+                    {% endif %}
+                    <div class="card-body text-center">
                         <h5 class="card-title">{{ curso.nombre }}</h5>
                         <p class="card-text">{{ curso.descripcion }}</p>
                         <p class="card-text">
                             <small class="text-muted">Páginas totales: {{ curso.total_paginas }}</small>
                         </p>
+                    </div>
+                    <!-- Centrar los botones en el pie de la tarjeta -->
+                    <div class="card-footer text-center">
+                        <a href="{% url 'curso_detalle' curso.id %}" class="btn btn-primary mx-2">Ver curso</a>
+                        <a href="{% url 'curso_detalle' curso.id %}" class="btn btn-info mx-2">Avance</a>
                     </div>
                 </div>
             </div>
