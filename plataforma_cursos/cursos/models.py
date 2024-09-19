@@ -59,12 +59,16 @@ class Progreso(models.Model):
     resultado_examen = models.FloatField(null=True, blank=True)
 
     def avance_total(self):
-        peso_avance = 0.7
-        peso_examen = 0.3
+        peso_avance = 0.7  # Peso del avance en las páginas
+        peso_examen = 0.3  # Peso del resultado del examen
 
+        # Cálculo del avance en función de las páginas visitadas (desde el curso)
         avance = (self.paginas_visitadas / self.curso.total_paginas) * peso_avance
+
+        # Cálculo del resultado del examen, si está disponible
         resultado_examen = (self.resultado_examen / 100) * peso_examen if self.resultado_examen else 0
 
+        # Total del avance
         return round(avance + resultado_examen, 2)
 
     def __str__(self):
