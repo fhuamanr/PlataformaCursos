@@ -105,3 +105,6 @@ def detalle_curso(request, curso_id):
         'progreso': progreso,
     }
     return render(request, 'cursos/detalle_curso.html', context)
+
+def homepage(request):
+    return render(request, 'cursos/homepage.html')  
