@@ -21,13 +21,14 @@
             height: auto;
         }
     </style>
+    {% load static %}
 </head>
 <body>
 
     <div class="hero">
         <div>
             <!-- Logo -->
-            <img src="/static/images/logo.png" alt="Logo de la Plataforma">
+            <img src="{% static 'cursos/images/logo.png' %}" alt="Logo de la Plataforma">
             
             <!-- Título y Descripción -->
             <h1 class="mt-4">Bienvenido a la Plataforma de Cursos</h1>
