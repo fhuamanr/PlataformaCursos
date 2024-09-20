@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-j!$21rq!f-!1+5qz_@ep#xnrii)&+pcuk58$&s*(p09kersp87
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -77,8 +78,12 @@ WSGI_APPLICATION = 'plataforma_cursos.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'portales',  # Nombre de la base de datos que creaste en Azure
+        'USER': 'admin_bd',        # Nombre de usuario que configuraste
+        'PASSWORD': 'Licha2206',        # Contraseña que configuraste
+        'HOST': 'portalcursosbd.postgres.database.azure.com',           # Nombre del host de Azure (p. ej., mydb.postgres.database.azure.com)
+        'PORT': '5432',                  # El puerto para PostgreSQL es 5432
     }
 }
 
@@ -118,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Configuración para WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
