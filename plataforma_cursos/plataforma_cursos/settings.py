@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'plataforma_cursos.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'portales',  # Nombre de la base de datos que creaste en Azure
-        'USER': 'admin_bd',        # Nombre de usuario que configuraste
-        'PASSWORD': 'Licha2206',        # Contraseña que configuraste
-        'HOST': 'portalcursosbd.postgres.database.azure.com',           # Nombre del host de Azure (p. ej., mydb.postgres.database.azure.com)
-        'PORT': '5432',                  # El puerto para PostgreSQL es 5432
+        'NAME': 'portales',  
+        'USER': 'admin_bd',        
+        'PASSWORD': 'Licha2206',        
+        'HOST': 'portalcursosbd.postgres.database.azure.com',          
+        'PORT': '5432',                
     }
 }
 
