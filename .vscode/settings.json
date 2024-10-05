@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "/subscriptions/988a0b48-963b-4616-890b-efbb16be2280/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/CertusLearn",
-    "appService.deploySubpath": "."
-}
