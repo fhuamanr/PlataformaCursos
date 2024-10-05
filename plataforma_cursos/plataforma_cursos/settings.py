@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-j!$21rq!f-!1+5qz_@ep#xnrii)&+pcuk58$&s*(p09kersp87
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", ".now.sh"]
 
 
 # Application definition
@@ -80,10 +81,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'portales',  
-        'USER': 'admin_bd',        
-        'PASSWORD': 'Licha2206',        
-        'HOST': 'portalcursosbd.postgres.database.azure.com',          
-        'PORT': '5432',                
+        'USER': 'avnadmin',        
+        'PASSWORD': 'AVNS_Q-aVBLKXxxhyjXouLrH',        
+        'HOST': 'pg-2cbc4d1-portalcertusfhr.l.aivencloud.com',          
+        'PORT': '24741',                
     }
 }
 
@@ -124,6 +125,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "ui/static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "ui/staticfiles")
 
 # Configuración para WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

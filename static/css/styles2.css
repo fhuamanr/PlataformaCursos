@@ -1,0 +1,49 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+}
+
+.navbar {
+    padding: 1rem;
+}
+
+.hero {
+    padding: 5rem 0;
+    background-color: #181818;
+}
+
+.hero .user-info img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 2rem 0;
+}
+
+.hero .highlight {
+    color: #f5bf42;
+}
+
+.social-icons i {
+    color: #f5bf42;
+}
+
+footer {
+    background-color: #181818;
+}
+
+footer h5 {
+    font-weight: bold;
+}
+
+footer a {
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #f5bf42;
+}
