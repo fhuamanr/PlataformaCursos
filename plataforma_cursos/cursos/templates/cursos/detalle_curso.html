@@ -7,18 +7,62 @@
     <title>Detalle del Curso</title>
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1f1f1f;
+            color: #fff;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            background-color: #2b2b2b;
+            border: none;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .card-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .card-text {
+            font-size: 1.2rem;
+            color: #ddd;
+        }
+        .btn-primary {
+            background-color: #ffd700;
+            border: none;
+            color: #000;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .progress-bar {
+            background-color: #ffd700;
+        }
+        .progress {
+            background-color: #404040;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container mt-5">
+    <div class="container">
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="card">
                     <!-- Imagen del curso -->
                     {% if curso.imagen %}
-                    <img src="{{ curso.imagen.url }}" class="card-img-top" alt="{{ curso.nombre }}" style="height:300px; object-fit:cover;">
+                    <img src="{{ curso.imagen.url }}" class="card-img-top" alt="{{ curso.nombre }}" style="height:400px; object-fit:cover;">
                     {% else %}
-                    <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Imagen no disponible" style="height:300px; object-fit:cover;">
+                    <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Imagen no disponible" style="height:400px; object-fit:cover;">
                     {% endif %}
 
                     <div class="card-body">
@@ -29,13 +73,18 @@
                         <!-- Mostrar avance del usuario si está disponible -->
                         {% if progreso %}
                         <p class="card-text"><strong>Páginas visitadas:</strong> {{ progreso.paginas_visitadas }} / {{ progreso.total_paginas }}</p>
-                        <p class="card-text"><strong>Progreso total:</strong> {{ progreso.avance_total }}%</p>
+                        
+                        <!-- Barra de progreso -->
+                        <div class="progress mb-3">
+                            <div class="progress-bar" role="progressbar" style="width: {{ progreso.avance_total }}%;" aria-valuenow="{{ progreso.avance_total }}" aria-valuemin="0" aria-valuemax="100">{{ progreso.avance_total }}%</div>
+                        </div>
+                        
                         <p class="card-text"><strong>Resultado del examen:</strong> {{ progreso.resultado_examen|default:"N/A" }}%</p>
                         {% else %}
                         <p class="text-danger">No has comenzado este curso todavía.</p>
                         {% endif %}
 
-                        <a href="{% url 'listado_cursos' %}" class="btn btn-primary">Volver al Listado de Cursos</a>
+                        <a href="{% url 'listado_cursos' %}" class="btn btn-primary mt-3">Volver al Listado de Cursos</a>
                     </div>
                 </div>
             </div>
