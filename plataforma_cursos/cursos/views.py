@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
 from .forms import UserRegistrationForm,CustomLoginForm
+from django.http import JsonResponse
 
 
 def custom_login(request):
@@ -107,4 +108,29 @@ def detalle_curso(request, curso_id):
     return render(request, 'cursos/detalle_curso.html', context)
 
 def homepage(request):
-    return render(request, 'cursos/homepage.html')  
+    return render(request, 'cursos/homepage.html')
+
+# Algoritmo Quicksort para ordenar de mayor a menor
+def quicksort(arr, key=None):
+    if len(arr) <= 1:
+        return arr
+    pivot = key(arr[len(arr) // 2]) if key else arr[len(arr) // 2]
+    
+    left = [x for x in arr if key(x) < pivot] if key else [x for x in arr if x < pivot]
+    middle = [x for x in arr if key(x) == pivot] if key else [x for x in arr if x == pivot]
+    right = [x for x in arr if key(x) > pivot] if key else [x for x in arr if x > pivot]
+    
+    return quicksort(left, key=key) + middle + quicksort(right, key=key)
+
+def listado_cursos_ordenados(request):
+    cursos = Curso.objects.all()  # Obtén todos los cursos de la BD
+
+    ordenar = request.GET.get('ordenar', 'false')  # Inicialmente desordenado
+
+    if ordenar == 'true':
+        cursos = quicksort(list(cursos), key=lambda curso: curso.total_paginas)  # Aplica el algoritmo quicksort
+        cursos.reverse()  # Invierte el resultado para que sea descendente
+    else:
+        cursos = list(cursos)  # Mantiene el orden de la BD
+
+    return render(request, 'cursos/listado_cursos_ordenados.html', {'cursos': cursos, 'ordenar': ordenar})

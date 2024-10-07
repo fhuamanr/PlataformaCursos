@@ -16,7 +16,8 @@ urlpatterns = [
     path('registro_curso/', views.registro_curso, name='registro_curso'),
     path('<int:curso_id>/', views.detalle_curso, name='detalle_curso'),
     path('curso/<int:curso_id>/', views.detalle_curso, name='curso_detalle'),
-    path('<int:curso_id>/actualizar/', views.actualizar_progreso, name='actualizar_progreso'), 
+    path('<int:curso_id>/actualizar/', views.actualizar_progreso, name='actualizar_progreso'),
+    path('cursos_ordenados/', views.listado_cursos_ordenados, name='listado_cursos_ordenados'),
     path('logout/', auth_views.LogoutView.as_view(next_page=reverse_lazy('homepage')), name='logout'),
 ] 
 

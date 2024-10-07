@@ -116,6 +116,10 @@
             <a href="{% url 'registro_curso' %}" class="btn btn-success">
                 <i class="fas fa-plus"></i> Agregar Curso
             </a>
+            <!-- Nuevo botón para redirigir a lista_cursos_ordenados -->
+            <a href="{% url 'listado_cursos_ordenados' %}" class="btn btn-info">
+                <i class="fas fa-sort"></i> Ver Cursos Ordenados
+            </a>
             <!-- Formulario para cerrar sesión -->
             <form id="logout-form" action="{% url 'logout' %}" method="post" style="display:inline;">
                 {% csrf_token %}

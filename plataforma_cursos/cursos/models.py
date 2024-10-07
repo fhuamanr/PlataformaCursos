@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.conf import settings
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, password=None, **extra_fields):
         if not username:
@@ -73,3 +74,5 @@ class Progreso(models.Model):
 
     def __str__(self):
         return f'{self.usuario} - {self.curso.nombre}'
+
+
