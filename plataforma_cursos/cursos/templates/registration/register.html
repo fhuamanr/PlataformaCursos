@@ -9,56 +9,153 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #0c0c0c;
+            color: white;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100%;
+            overflow-y: auto; /* Permite desplazamiento vertical */
         }
+
         .register-container {
-            background-color: white;
+            background-color: #1e1e1e;
             padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            margin: 50px auto; /* Centra el formulario verticalmente */
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background-color: #ffbf00;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #e0a800;
+        }
+
+        .form-control {
+            background-color: #333;
+            border: none;
+            color: #fff;
+        }
+
+        .form-control:focus {
+            background-color: #333;
+            border: 1px solid #ffbf00;
+        }
+
+        .btn-google {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1rem;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .btn-google img {
+            width: 20px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .form-check-label {
+            color: white;
+        }
+
+        .divider {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            height: 1px;
+            width: 40%;
+            background: #fff;
+            position: absolute;
+            top: 50%;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .divider span {
+            display: inline-block;
+            background-color: #1e1e1e;
+            padding: 0 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="register-container col-md-4">
-        <h2 class="text-center">Registro de Usuario</h2>
+    <div class="register-container">
+        <h2>Crea una cuenta 👋</h2>
+        <p>Completa tus datos para crear una cuenta</p>
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
-                {{ form.username.label_tag }}  <!-- Muestra el label del campo -->
-                {{ form.username|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+                <label for="username" class="form-label">Nombre de usuario</label>
+                {{ form.username|add_class:"form-control" }}
             </div>
             <div class="mb-3">
-                {{ form.email.label_tag }}  <!-- Muestra el label del campo -->
-                {{ form.email|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+                <label for="email" class="form-label">Correo electrónico</label>
+                {{ form.email|add_class:"form-control" }}
             </div>
             <div class="mb-3">
-                {{ form.first_name.label_tag }}  <!-- Muestra el label del campo -->
-                {{ form.first_name|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+                <label for="first_name" class="form-label">Nombre</label>
+                {{ form.first_name|add_class:"form-control" }}
             </div>
             <div class="mb-3">
-                {{ form.last_name.label_tag }}  <!-- Muestra el label del campo -->
-                {{ form.last_name|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+                <label for="last_name" class="form-label">Apellido</label>
+                {{ form.last_name|add_class:"form-control" }}
             </div>
             <div class="mb-3">
-                {{ form.password1.label_tag }}  <!-- Muestra el label del campo -->
-                {{ form.password1|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+                <label for="password1" class="form-label">Contraseña</label>
+                {{ form.password1|add_class:"form-control" }}
             </div>
             <div class="mb-3">
-                {{ form.password2.label_tag }}  <!-- Muestra el label del campo -->
-                {{ form.password2|add_class:"form-control" }}  <!-- Aplica clase Bootstrap -->
+                <label for="password2" class="form-label">Confirmar Contraseña</label>
+                {{ form.password2|add_class:"form-control" }}
             </div>
-            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            <button type="submit" class="btn btn-primary w-100">¡Activa tu cuenta ahora!</button>
         </form>
-        <!-- Botón de regresar -->
+
+        <div class="divider">
+            <span>O</span>
+        </div>
+
+        <a href="#" class="btn btn-google">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google logo"> Registrarse con Google
+        </a>
+
         <div class="text-center mt-3">
             <a href="{% url 'login' %}" class="btn btn-secondary">Regresar</a>
         </div>
+
     </div>
 
     <!-- Bootstrap JS CDN -->
