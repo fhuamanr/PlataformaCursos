@@ -84,7 +84,10 @@ DATABASES = {
         'USER': 'avnadmin',        
         'PASSWORD': 'AVNS_Q-aVBLKXxxhyjXouLrH',        
         'HOST': 'pg-2cbc4d1-portalcertusfhr.l.aivencloud.com',          
-        'PORT': '24741',                
+        'PORT': '24741',
+        'TEST': {
+            'NAME': 'test_portales',
+        }                
     }
 }
 
