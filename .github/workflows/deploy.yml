@@ -3,32 +3,41 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master
+      - master  # Puedes cambiar esto según la rama que desees usar
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the repository
+    # Step 1: Clonar el repositorio
     - name: Check out the repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    # Step 2: Set up SSH without passphrase
-    - name: Set up SSH without passphrase
+    # Step 2: Configurar SSH y agregar la clave privada
+    - name: Set up SSH
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key
         chmod 600 private_key
-        eval $(ssh-agent -s)
+        eval $(ssh-agent -s)  # Inicia el agente SSH
         ssh-add private_key
-        ssh-add -L  # Verificar que la clave esté añadida
+        ssh-add -L  # Verificar claves añadidas
 
-    # Step 3: Test SSH connection
-    - name: Test SSH connection
+    # Step 3: Desactivar verificación de host estricto (opcional)
+    - name: Create SSH config
       run: |
-        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "echo 'SSH Connection Successful!'"
+        echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
 
-    # Step 4: Deploy to EC2
+    # Step 4: Probar la conexión SSH
+    - name: Test SSH connection
+      run: ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "echo 'SSH Connection Successful!'"
+
+    # Step 5: Desplegar cambios a EC2
     - name: Deploy to EC2
       run: |
-        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "cd /home/ec2-user/PlataformaCursos && git pull origin main && source /home/ec2-user/PlataformaCursos/bin/activate && nohup python3 manage.py runserver 0.0.0.0:8000 &"
+        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+        cd /home/ec2-user/PlataformaCursos
+        git pull origin main
+        source /home/ec2-user/PlataformaCursos/bin/activate
+        nohup python3 manage.py runserver 0.0.0.0:8000 &
+        EOF
