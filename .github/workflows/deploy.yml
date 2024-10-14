@@ -3,31 +3,31 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master  # Puedes especificar otra rama si es necesario
+      - main  # o la rama que elijas
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Clonar el repositorio
+    # Paso 1: Clonar el repositorio
     - name: Check out the repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
-    # Step 2: Configurar la clave SSH para el acceso a EC2
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+    # Paso 2: Configurar la clave SSH para el acceso a EC2 con passphrase
+    - name: Set up SSH with passphrase
+      run: |
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key
+        chmod 600 private_key
+        echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add private_key
+        ssh-add -L  # Verificar claves añadidas
 
-    # Step 3: Desplegar los cambios a EC2 usando SSH
+    # Paso 3: Desplegar cambios a EC2
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@<YOUR_EC2_IP> << 'EOF'
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
         cd /home/ec2-user/PlataformaCursos
         git pull origin main
-        source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate
-        pip install -r requirements.txt
-        sudo systemctl stop uwsgi  # Detener uWSGI si ya está corriendo
-        uwsgi --ini /home/ec2-user/PlataformaCursos/uwsgi.ini  # Iniciar uWSGI con el archivo ini
+        source /home/ec2-user/PlataformaCursos/bin/activate
+        nohup python3 manage.py runserver 0.0.0.0:8000 &
         EOF
