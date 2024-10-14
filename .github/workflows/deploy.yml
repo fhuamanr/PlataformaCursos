@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Clonar el repositorio
       - uses: actions/checkout@v2
 
+      # Step 2: Configurar SSH para EC2
       - name: Set up SSH
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
@@ -21,14 +23,16 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add private_key
 
-      - name: Kill existing server (if running)
+      # Step 3: Matar cualquier proceso en el puerto 8000
+      - name: Kill process using port 8000 (if running)
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
           USER_NAME: ${{ secrets.EC2_USER }}
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
-          "pgrep -f 'python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver' | xargs -r kill -9 || echo 'No server running'"
+          "sudo fuser -k 8000/tcp || echo 'No process running on port 8000'"
 
+      # Step 4: Desplegar la aplicación
       - name: Deploy to EC2
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
@@ -41,13 +45,11 @@ jobs:
           pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
           nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /dev/null 2>&1 &'
 
-      - name: Sleep for server to start
-        run: sleep 10  # Espera 10 segundos para que el servidor inicie
-
+      # Step 5: Verificar el estado del servidor
       - name: Check Server Status
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
           USER_NAME: ${{ secrets.EC2_USER }}
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
-          "pgrep -f 'python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver' || echo 'Server failed to start'"
+          "pgrep -f 'python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver' && echo 'Server is running' || echo 'Server failed to start'"
