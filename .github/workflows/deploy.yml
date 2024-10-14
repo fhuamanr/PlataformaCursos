@@ -24,7 +24,7 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
 
           # Conectarse a EC2 y ejecutar el proceso de despliegue
-          ssh -v -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
 
               # Cambia al directorio del proyecto en la instancia EC2
               cd /home/ec2-user/PlataformaCursos &&
@@ -37,6 +37,9 @@ jobs:
               # Activar el entorno virtual
               source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
 
-              # Iniciar la aplicación usando nohup para que siga corriendo en segundo plano
-              nohup python3 manage.py runserver 0.0.0.0:8000 &
+              # Instalar las dependencias del proyecto
+              pip install -r requirements.txt &&
+
+              # Iniciar la aplicación usando nohup con la ruta completa de manage.py
+              nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 &
           '
