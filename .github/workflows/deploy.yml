@@ -10,20 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Clonar el repositorio
+    # Step 1: Check out the repository
     - name: Check out the repository
       uses: actions/checkout@v3
 
-    # Step 2: Configurar la clave SSH y el passphrase
+    # Step 2: Set up SSH with passphrase
     - name: Set up SSH with passphrase
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key
         chmod 600 private_key
         eval $(ssh-agent -s)
         echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add private_key
-        ssh-add -L
+        ssh-add -L  # Verifica que la clave está añadida
 
-    # Step 3: Desplegar a EC2
+    # Step 3: Verificar conexión SSH usando la IP de EC2 desde un secreto
+    - name: Test SSH connection
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP_ADDRESS }} "echo 'SSH Connection Successful!'"
+
+    # Step 4: Deploy to EC2 usando la IP de EC2 como variable
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@18.217.30.193 "cd /home/ec2-user/PlataformaCursos && git pull origin main && source /home/ec2-user/PlataformaCursos/bin/activate && nohup python3 manage.py runserver 0.0.0.0:8000 &"
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP_ADDRESS }} "cd /home/ec2-user/PlataformaCursos && git pull origin main && source /home/ec2-user/PlataformaCursos/bin/activate && nohup python3 manage.py runserver 0.0.0.0:8000 &"
