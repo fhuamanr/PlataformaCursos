@@ -21,6 +21,14 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add private_key
 
+      - name: Kill existing server (if running)
+        env:
+          IP_ADDRESS: ${{ secrets.EC2_IP }}
+          USER_NAME: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
+          "pgrep -f 'python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver' | xargs -r kill -9 || echo 'No server running'"
+
       - name: Deploy to EC2
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
@@ -32,6 +40,9 @@ jobs:
           source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
           nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /dev/null 2>&1 &'
+
+      - name: Sleep for server to start
+        run: sleep 10  # Espera 10 segundos para que el servidor inicie
 
       - name: Check Server Status
         env:
