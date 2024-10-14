@@ -24,9 +24,10 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@<YOUR_EC2_IP> << 'EOF'
-        cd /home/ec2-user/your_project_directory
+        cd /home/ec2-user/PlataformaCursos
         git pull origin main
-        source /home/ec2-user/your_virtualenv/bin/activate
+        source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate
         pip install -r requirements.txt
-        sudo systemctl restart gunicorn  # O el proceso que uses para gestionar Gunicorn
+        sudo systemctl stop uwsgi  # Detener uWSGI si ya está corriendo
+        uwsgi --ini /home/ec2-user/PlataformaCursos/uwsgi.ini  # Iniciar uWSGI con el archivo ini
         EOF
