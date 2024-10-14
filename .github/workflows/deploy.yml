@@ -23,7 +23,7 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add private_key
 
-      # Step 3: Matar cualquier proceso en el puerto 8000
+      # Step 3: Matar cualquier proceso en el puerto 8000 (si existe)
       - name: Kill process using port 8000 (if running)
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
@@ -32,8 +32,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
           "sudo fuser -k 8000/tcp || echo 'No process running on port 8000'"
 
-      # Step 4: Desplegar la aplicación (sin quedarse pegado)
-      - name: Deploy to EC2
+      # Step 4: Instalar dependencias y desplegar usando tmux (sin bloquear)
+      - name: Deploy to EC2 using tmux
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
           USER_NAME: ${{ secrets.EC2_USER }}
@@ -43,8 +43,7 @@ jobs:
           git pull origin master &&
           source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
-          # Ejecutar el servidor en segundo plano y redirigir toda la salida
-          nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /home/ec2-user/PlataformaCursos/server.log 2>&1 & sleep 1'
+          tmux new-session -d -s plataforma_server "python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000"'
 
       # Step 5: Verificar que el servidor está corriendo
       - name: Check Server Status
