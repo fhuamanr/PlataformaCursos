@@ -3,40 +3,34 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master  # Cambia esto si necesitas otra rama
+      - master  # Cambia a la rama que necesites
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Clonar el repositorio
+    # Paso 1: Clonar el repositorio
     - name: Check out the repository
       uses: actions/checkout@v3
 
-    # Step 2: Configurar SSH y agregar la clave privada
+    # Paso 2: Configurar la clave SSH para el acceso a EC2
     - name: Set up SSH
       run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" > private_key
-        chmod 600 private_key
-        eval $(ssh-agent -s)  # Inicia el agente SSH
-        ssh-add private_key
-        ssh-add -L  # Verificar claves añadidas
+        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
+        eval $(ssh-agent -s)
+        ssh-add private_key.pem
 
-    # Step 3: Crear el directorio SSH y desactivar verificación de host estricto
-    - name: Create SSH config
-      run: |
-        mkdir -p ~/.ssh  # Crear el directorio si no existe
-        echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-
-    # Step 4: Probar la conexión SSH
+    # Paso 3: Verificar la conexión SSH
     - name: Test SSH connection
-      run: ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "echo 'SSH Connection Successful!'"
+      run: |
+        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "echo 'SSH Connection Successful!'"
 
-    # Step 5: Desplegar cambios a EC2
+    # Paso 4: Desplegar los cambios a EC2
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
         cd /home/ec2-user/PlataformaCursos
         git pull origin main
         source /home/ec2-user/PlataformaCursos/bin/activate
