@@ -1,38 +1,45 @@
-name: Deploy to EC2
+name: Deploy PlataformaCursos App
 
 on:
   push:
-    branches:
-      - master  # Cambia a la rama que necesites
+    branches: [master]
 
 jobs:
   deploy:
+    name: EC2 Deployment
     runs-on: ubuntu-latest
 
     steps:
-    # Paso 1: Clonar el repositorio
-    - name: Check out the repository
-      uses: actions/checkout@v3
+      # Step 1: Check out the code from the repository
+      - uses: actions/checkout@v2
 
-    # Paso 2: Configurar la clave SSH para el acceso a EC2
-    - name: Set up SSH
-      run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
-        chmod 600 private_key.pem
-        eval $(ssh-agent -s)
-        ssh-add private_key.pem
+      # Step 2: Set up SSH to connect to the EC2 instance
+      - name: Build and Deploy 
+        env: 
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}  # Clave privada para acceder al EC2
+          IP_ADDRESS: ${{ secrets.EC2_IP }}            # Dirección IP de la instancia EC2
+          USER_NAME: ${{ secrets.EC2_USER }}           # Usuario para acceder al EC2
+        run: |
+          # Guardar la clave privada en un archivo temporal y configurar los permisos
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
 
-    # Paso 3: Verificar la conexión SSH
-    - name: Test SSH connection
-      run: |
-        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "echo 'SSH Connection Successful!'"
+          # Conectarse a EC2 y ejecutar el proceso de despliegue
+          ssh -v -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
 
-    # Paso 4: Desplegar los cambios a EC2
-    - name: Deploy to EC2
-      run: |
-        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
-        cd /home/ec2-user/PlataformaCursos
-        git pull origin main
-        source /home/ec2-user/PlataformaCursos/bin/activate
-        nohup python3 manage.py runserver 0.0.0.0:8000 &
-        EOF
+              # Cambia al directorio del proyecto en la instancia EC2
+              cd /home/ec2-user/PlataformaCursos &&
+
+              # Actualiza el código fuente desde el repositorio
+              git checkout master &&
+              git reset --hard origin/master &&
+              git pull origin master &&
+
+              # Activar el entorno virtual
+              source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
+
+              # Instalar las dependencias del proyecto
+              pip install -r requirements.txt &&
+
+              # Iniciar la aplicación usando nohup para que siga corriendo en segundo plano
+              nohup python3 manage.py runserver 0.0.0.0:8000 &
+          '
