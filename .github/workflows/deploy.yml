@@ -14,9 +14,10 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v2
 
-    # Paso 2: Configurar la clave SSH para el acceso a EC2 con passphrase
+    # Paso 2: Iniciar el agente SSH y agregar la clave con passphrase
     - name: Set up SSH with passphrase
       run: |
+        eval "$(ssh-agent -s)"  # Inicia el agente SSH
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key
         chmod 600 private_key
         echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add private_key
