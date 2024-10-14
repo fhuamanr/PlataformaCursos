@@ -20,10 +20,12 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import reverse_lazy
+from django.views.generic import RedirectView
 
 
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/cursos/', permanent=True)),
     path('admin/', admin.site.urls),
     path('cursos/', include('cursos.urls')),
 
