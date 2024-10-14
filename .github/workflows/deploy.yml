@@ -38,8 +38,14 @@ jobs:
               source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
 
               # Instalar las dependencias del proyecto
-              pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
+              pip install -r home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
 
-              # Iniciar la aplicación usando nohup con la ruta completa de manage.py
-              nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 &
+              # Iniciar la aplicación usando nohup en segundo plano y redirigir la salida a un archivo de log
+              nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /home/ec2-user/PlataformaCursos/server.log 2>&1 &
           '
+
+      # Step 3: Verificar si el servidor está corriendo correctamente
+      - name: Check Server Status
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
+              pgrep -f "python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver" || echo "Server failed to start"'
