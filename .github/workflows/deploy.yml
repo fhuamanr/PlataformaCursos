@@ -14,21 +14,21 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up SSH with passphrase
-    - name: Set up SSH with passphrase
+    # Step 2: Set up SSH without passphrase
+    - name: Set up SSH without passphrase
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key
         chmod 600 private_key
         eval $(ssh-agent -s)
-        echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add private_key
-        ssh-add -L  # Verifica que la clave está añadida
+        ssh-add private_key
+        ssh-add -L  # Verificar que la clave esté añadida
 
-    # Step 3: Verificar conexión SSH usando la IP de EC2 desde un secreto
+    # Step 3: Test SSH connection
     - name: Test SSH connection
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "echo 'SSH Connection Successful!'"
 
-    # Step 4: Deploy to EC2 usando la IP de EC2 como variable
+    # Step 4: Deploy to EC2
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "cd /home/ec2-user/PlataformaCursos && git pull origin main && source /home/ec2-user/PlataformaCursos/bin/activate && nohup python3 manage.py runserver 0.0.0.0:8000 &"
