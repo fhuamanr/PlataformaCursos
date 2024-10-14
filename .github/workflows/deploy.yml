@@ -2,7 +2,7 @@ name: Deploy PlataformaCursos App
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   deploy:
@@ -10,42 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code from the repository
       - uses: actions/checkout@v2
 
-      # Step 2: Set up SSH to connect to the EC2 instance
-      - name: Build and Deploy 
-        env: 
-          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}  # Clave privada para acceder al EC2
-          IP_ADDRESS: ${{ secrets.EC2_IP }}            # Dirección IP de la instancia EC2
-          USER_NAME: ${{ secrets.EC2_USER }}           # Usuario para acceder al EC2
+      - name: Set up SSH
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
-          # Guardar la clave privada en un archivo temporal y configurar los permisos
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          echo "$PRIVATE_KEY" > private_key
+          chmod 600 private_key
+          eval $(ssh-agent -s)
+          ssh-add private_key
 
-          # Conectarse a EC2 y ejecutar el proceso de despliegue
+      - name: Deploy to EC2
+        env:
+          IP_ADDRESS: ${{ secrets.EC2_IP }}
+          USER_NAME: ${{ secrets.EC2_USER }}
+        run: |
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
+          cd /home/ec2-user/PlataformaCursos &&
+          git pull origin main &&
+          source /home/ec2-user/PlataformaCursos/bin/activate &&
+          pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
+          nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /dev/null 2>&1 &'
 
-              # Cambia al directorio del proyecto en la instancia EC2
-              cd /home/ec2-user/PlataformaCursos &&
-
-              # Actualiza el código fuente desde el repositorio
-              git checkout master &&
-              git reset --hard origin/master &&
-              git pull origin master &&
-
-              # Activar el entorno virtual
-              source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
-
-              # Instalar las dependencias del proyecto
-              pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
-
-              # Iniciar la aplicación usando nohup en segundo plano y redirigir la salida a un archivo de log
-              nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /home/ec2-user/PlataformaCursos/server.log 2>&1 &
-          '
-
-      # Step 3: Verificar si el servidor está corriendo correctamente
       - name: Check Server Status
+        env:
+          IP_ADDRESS: ${{ secrets.EC2_IP }}
+          USER_NAME: ${{ secrets.EC2_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
-              pgrep -f "python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver" || echo "Server failed to start"'
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
+          "pgrep -f 'python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver' || echo 'Server failed to start'"
