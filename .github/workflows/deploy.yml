@@ -26,9 +26,9 @@ jobs:
     # Step 3: Verificar conexión SSH usando la IP de EC2 desde un secreto
     - name: Test SSH connection
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP_ADDRESS }} "echo 'SSH Connection Successful!'"
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "echo 'SSH Connection Successful!'"
 
     # Step 4: Deploy to EC2 usando la IP de EC2 como variable
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP_ADDRESS }} "cd /home/ec2-user/PlataformaCursos && git pull origin main && source /home/ec2-user/PlataformaCursos/bin/activate && nohup python3 manage.py runserver 0.0.0.0:8000 &"
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} "cd /home/ec2-user/PlataformaCursos && git pull origin main && source /home/ec2-user/PlataformaCursos/bin/activate && nohup python3 manage.py runserver 0.0.0.0:8000 &"
