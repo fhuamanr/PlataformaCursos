@@ -29,7 +29,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
           cd /home/ec2-user/PlataformaCursos &&
           git pull origin master &&
-          source /home/ec2-user/PlataformaCursos/bin/activate &&
+          source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
           nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /dev/null 2>&1 &'
 
