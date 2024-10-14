@@ -3,30 +3,30 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master  # o la rama que elijas
+      - master  # Puedes especificar otra rama si es necesario
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # Paso 1: Clonar el repositorio
+    # Step 1: Clonar el repositorio
     - name: Check out the repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    # Paso 2: Iniciar el agente SSH y agregar la clave con passphrase
+    # Step 2: Configurar la clave SSH y el passphrase para el acceso a EC2
     - name: Set up SSH with passphrase
       run: |
-        eval "$(ssh-agent -s)"  # Inicia el agente SSH
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key
         chmod 600 private_key
+        eval $(ssh-agent -s)
         echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add private_key
-        ssh-add -L  # Verificar claves añadidas
+        ssh-add -L  # Verificar que la clave se añadió correctamente
 
-    # Paso 3: Desplegar cambios a EC2
+    # Step 3: Desplegar los cambios a EC2 usando SSH
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no ec2-user@<EC2_IP_ADDRESS> << 'EOF'
         cd /home/ec2-user/PlataformaCursos
         git pull origin main
         source /home/ec2-user/PlataformaCursos/bin/activate
