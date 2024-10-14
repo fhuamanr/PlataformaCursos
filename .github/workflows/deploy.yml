@@ -38,7 +38,7 @@ jobs:
               source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
 
               # Instalar las dependencias del proyecto
-              pip install -r home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
+              pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
 
               # Iniciar la aplicación usando nohup en segundo plano y redirigir la salida a un archivo de log
               nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /home/ec2-user/PlataformaCursos/server.log 2>&1 &
