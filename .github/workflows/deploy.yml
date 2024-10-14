@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master  # Puedes cambiar esto según la rama que desees usar
+      - master  # Cambia esto si necesitas otra rama
 
 jobs:
   deploy:
@@ -23,9 +23,10 @@ jobs:
         ssh-add private_key
         ssh-add -L  # Verificar claves añadidas
 
-    # Step 3: Desactivar verificación de host estricto (opcional)
+    # Step 3: Crear el directorio SSH y desactivar verificación de host estricto
     - name: Create SSH config
       run: |
+        mkdir -p ~/.ssh  # Crear el directorio si no existe
         echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
 
     # Step 4: Probar la conexión SSH
@@ -35,7 +36,7 @@ jobs:
     # Step 5: Desplegar cambios a EC2
     - name: Deploy to EC2
       run: |
-        ssh -v -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_IP }} << 'EOF'
         cd /home/ec2-user/PlataformaCursos
         git pull origin main
         source /home/ec2-user/PlataformaCursos/bin/activate
