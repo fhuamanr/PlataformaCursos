@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - master  # Puedes especificar otra rama si es necesario
+      - master
 
 jobs:
   deploy:
@@ -14,21 +14,16 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v3
 
-    # Step 2: Configurar la clave SSH y el passphrase para el acceso a EC2
+    # Step 2: Configurar la clave SSH y el passphrase
     - name: Set up SSH with passphrase
       run: |
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key
         chmod 600 private_key
         eval $(ssh-agent -s)
         echo "${{ secrets.SSH_PASSPHRASE }}" | ssh-add private_key
-        ssh-add -L  # Verificar que la clave se añadió correctamente
+        ssh-add -L
 
-    # Step 3: Desplegar los cambios a EC2 usando SSH
+    # Step 3: Desplegar a EC2
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@<EC2_IP_ADDRESS> << 'EOF'
-        cd /home/ec2-user/PlataformaCursos
-        git pull origin main
-        source /home/ec2-user/PlataformaCursos/bin/activate
-        nohup python3 manage.py runserver 0.0.0.0:8000 &
-        EOF
+        ssh -o StrictHostKeyChecking=no ec2-user@<EC2_IP_ADDRESS> "cd /home/ec2-user/PlataformaCursos && git pull origin main && source /home/ec2-user/PlataformaCursos/bin/activate && nohup python3 manage.py runserver 0.0.0.0:8000 &"
