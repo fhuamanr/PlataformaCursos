@@ -43,7 +43,8 @@ jobs:
           git pull origin master &&
           source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
-          nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /home/ec2-user/PlataformaCursos/server.log 2>&1 & echo $! > /home/ec2-user/PlataformaCursos/server_pid.txt'
+          # Ejecutar el servidor en segundo plano y redirigir toda la salida
+          nohup python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000 > /home/ec2-user/PlataformaCursos/server.log 2>&1 & sleep 1'
 
       # Step 5: Verificar que el servidor está corriendo
       - name: Check Server Status
