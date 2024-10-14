@@ -37,9 +37,6 @@ jobs:
               # Activar el entorno virtual
               source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
 
-              # Instalar las dependencias del proyecto
-              pip install -r requirements.txt &&
-
               # Iniciar la aplicación usando nohup para que siga corriendo en segundo plano
               nohup python3 manage.py runserver 0.0.0.0:8000 &
           '
