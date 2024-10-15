@@ -23,7 +23,7 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add private_key
 
-      # Step 3: Desplegar la aplicación y reiniciar el servicio
+      # Step 3: Desplegar y Reiniciar Gunicorn
       - name: Deploy and Restart Gunicorn Service
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
@@ -31,16 +31,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
           cd /home/ec2-user/PlataformaCursos &&
-          git pull origin master &&
-          source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
-          pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
+          git fetch origin master &&
+          git reset --hard FETCH_HEAD &&
+          git clean -fd &&
           sudo systemctl restart plataformacursos.service'
-
-      # Step 4: Verificar que el servicio está corriendo
-      - name: Check Gunicorn Service Status
-        env:
-          IP_ADDRESS: ${{ secrets.EC2_IP }}
-          USER_NAME: ${{ secrets.EC2_USER }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
-          "sudo systemctl status plataformacursos.service && echo 'Service is running' || echo 'Service failed to start'"

@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+*.sqlite3-journal
+
+# Django static and media files
+/staticfiles/
+/media/
+
+# If you're using a virtual environment
+venv/
+env/
+*.env
+
+# Local development environment files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# gunicorn logs
+*.log
+*.pid
+
+# macOS files
+.DS_Store
+
+# Ignore the settings for production or sensitive information
+settings_local.py
+.env
+
+# Node.js build and module files (if you're using npm or yarn)
+node_modules/
+build/
+
+# Python egg and distribution files
+*.egg-info/
+dist/
+build/
