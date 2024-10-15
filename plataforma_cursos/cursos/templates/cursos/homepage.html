@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 {% load form_filters %}
 <html lang="es">
@@ -132,7 +133,7 @@
                             <a class="nav-link" href="#">Nosotros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">CursosDavid</a>
+                            <a class="nav-link" href="#">Cursos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Blog</a>
@@ -173,10 +174,10 @@
 
     <!-- Logos de tecnologías -->
     <section class="tech-icons">
-        <img src="path/to/your/icon1.png" alt="Tech Icon 1">
-        <img src="path/to/your/icon2.png" alt="Tech Icon 2">
-        <img src="path/to/your/icon3.png" alt="Tech Icon 3">
-        <img src="path/to/your/icon4.png" alt="Tech Icon 4">
+        <img src="{% static 'ImgSite/akar-icons_node-fill.png' %}" alt="Tech Icon 1">
+        <img src="{% static 'ImgSite/bxl_java.png' %}" alt="Tech Icon 2">
+        <img src="{% static 'ImgSite/fontisto_visual-studio.png' %}" alt="Tech Icon 3">
+        <img src="{% static 'ImgSite/mdi_docker.png' %}" alt="Tech Icon 4">
     </section>
 
     <!-- Footer -->
