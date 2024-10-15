@@ -23,17 +23,8 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add private_key
 
-      # Step 3: Instalar tmux y matar cualquier proceso en el puerto 8000
-      - name: Install tmux and kill process using port 8000 (if running)
-        env:
-          IP_ADDRESS: ${{ secrets.EC2_IP }}
-          USER_NAME: ${{ secrets.EC2_USER }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
-          "sudo yum install -y tmux && sudo fuser -k 8000/tcp || echo 'No process running on port 8000'"
-
-      # Step 4: Desplegar la aplicación (sin quedarse pegado)
-      - name: Deploy to EC2 using tmux
+      # Step 3: Desplegar la aplicación y reiniciar el servicio
+      - name: Deploy and Restart Gunicorn Service
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
           USER_NAME: ${{ secrets.EC2_USER }}
@@ -43,13 +34,13 @@ jobs:
           git pull origin master &&
           source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           pip install -r /home/ec2-user/PlataformaCursos/plataforma_cursos/requirements.txt &&
-          tmux new-session -d -s plataforma_server "python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver 0.0.0.0:8000"'
+          sudo systemctl restart plataformacursos.service'
 
-      # Step 5: Verificar que el servidor está corriendo
-      - name: Check Server Status
+      # Step 4: Verificar que el servicio está corriendo
+      - name: Check Gunicorn Service Status
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
           USER_NAME: ${{ secrets.EC2_USER }}
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} \
-          "pgrep -f 'python3 /home/ec2-user/PlataformaCursos/plataforma_cursos/manage.py runserver' && echo 'Server is running' || echo 'Server failed to start'"
+          "sudo systemctl status plataformacursos.service && echo 'Service is running' || echo 'Service failed to start'"
