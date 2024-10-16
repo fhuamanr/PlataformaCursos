@@ -48,6 +48,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
           cd /home/ec2-user/PlataformaCursos &&
           source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
+          cd  /home/ec2-user/PlataformaCursos/plataforma_cursos &&
           python3 manage.py test --keepdb'
 
       # Step 5: Reiniciar Gunicorn
