@@ -8,6 +8,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
 from .forms import UserRegistrationForm,CustomLoginForm
 from django.http import JsonResponse
+from django.http import HttpResponse
+from prometheus_client import generate_latest, CollectorRegistry, CONTENT_TYPE_LATEST
 
 
 def custom_login(request):
@@ -134,3 +136,9 @@ def listado_cursos_ordenados(request):
         cursos = list(cursos)  # Mantiene el orden de la BD
 
     return render(request, 'cursos/listado_cursos_ordenados.html', {'cursos': cursos, 'ordenar': ordenar})
+
+def metrics(request):
+    registry = CollectorRegistry()
+    # Esto recoge las métricas desde el registro por defecto
+    metrics_page = generate_latest(registry)
+    return HttpResponse(metrics_page, content_type=CONTENT_TYPE_LATEST)
