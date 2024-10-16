@@ -12,6 +12,39 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import os
+import boto3
+from botocore.exceptions import ClientError
+import json
+
+#Función para llamar a AWS Secret Manager para traer los valores de los secretos, luego diferenciaremos en una 2da
+#versión a través de variables de entorno para cambiar los valors
+
+def get_secret():
+    secret_name = "ProdCertusLearn"  #esto es lo que se modificará en una 2da versión
+    region_name = "us-east-2" 
+
+    # Crear un cliente de AWS Secrets Manager
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+
+        # Decodificar los secretos
+        secret = get_secret_value_response['SecretString']
+        return json.loads(secret)
+
+    except ClientError as e:
+        print(f"Error al obtener el secreto: {e}")
+        raise e
+
+# Obtener los datos del secreto
+secret_data = get_secret()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,17 +114,31 @@ WSGI_APPLICATION = 'plataforma_cursos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'portales',  
+#         'USER': 'avnadmin',        
+#         'PASSWORD': 'AVNS_Q-aVBLKXxxhyjXouLrH',        
+#         'HOST': 'pg-2cbc4d1-portalcertusfhr.l.aivencloud.com',          
+#         'PORT': '24741',
+#         'TEST': {
+#             'NAME': 'test_portales',
+#         }                
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'portales',  
-        'USER': 'avnadmin',        
-        'PASSWORD': 'AVNS_Q-aVBLKXxxhyjXouLrH',        
-        'HOST': 'pg-2cbc4d1-portalcertusfhr.l.aivencloud.com',          
-        'PORT': '24741',
+        'NAME': secret_data['dbname'],
+        'USER': secret_data['username'],
+        'PASSWORD': secret_data['password'],
+        'HOST': secret_data['host'],
+        'PORT': secret_data['port'],
         'TEST': {
             'NAME': 'test_portales',
-        }                
+        }  
     }
 }
 
