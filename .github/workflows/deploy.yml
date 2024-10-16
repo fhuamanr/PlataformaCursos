@@ -23,7 +23,7 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add private_key
 
-      # Step 3: Desplegar el código, activar entorno virtual, e instalar dependencias
+      # Step 3: Desplegar el código e instalar dependencias
       - name: Deploy and Install Dependencies
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
@@ -34,11 +34,11 @@ jobs:
           git fetch origin master &&
           git reset --hard FETCH_HEAD &&
           git clean -fd &&
-          source /home/ec2-user/PlataformaCursos/bin/activate &&  # Activar entorno virtual
+          source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           pip install -r requirements.txt &&
-          python manage.py migrate'  # Ejecutar migraciones
+          python manage.py migrate'
 
-      # Step 4: Ejecutar las pruebas unitarias
+      # Step 4: Ejecutar las pruebas unitarias desde la ruta correcta
       - name: Run Unit Tests
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
@@ -46,7 +46,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
           cd /home/ec2-user/PlataformaCursos &&
-          source /home/ec2-user/PlataformaCursos/bin/activate &&  # Activar entorno virtual
+          source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           python manage.py test'
 
       # Step 5: Reiniciar Gunicorn

@@ -51,3 +51,7 @@ build/
 *.egg-info/
 dist/
 build/
+
+# Ignorar la carpeta de medios
+/media/*
+!/media/cursos_imagenes
