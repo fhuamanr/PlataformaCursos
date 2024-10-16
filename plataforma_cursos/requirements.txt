@@ -10,7 +10,7 @@ packaging==24.1
 pillow==10.4.0
 prometheus_client==0.21.0
 psycopg2-binary==2.9.9
-python-dateutil==2.9.0.post0
+python-dateutil==2.8.2  # Cambiar a esta versión para evitar el conflicto
 s3transfer==0.6.0
 six==1.16.0
 sqlparse==0.5.1
