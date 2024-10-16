@@ -35,6 +35,7 @@ jobs:
           git reset --hard FETCH_HEAD &&
           git clean -fd &&
           source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
+          cd /home/ec2-user/PlataformaCursos/plataforma_cursos &&
           pip install -r requirements.txt &&
           python manage.py migrate'
 
