@@ -5,34 +5,15 @@ on:
     branches: [ master ]
 
 jobs:
-  test_and_deploy:
-    name: Test and Deploy to EC2
+  deploy:
+    name: EC2 Deployment
     runs-on: ubuntu-latest
 
     steps:
       # Step 1: Clonar el repositorio
       - uses: actions/checkout@v2
 
-      # Step 2: Configurar Python
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-
-      # Step 3: Instalar dependencias
-      - name: Install Dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-
-      # Step 4: Ejecutar pruebas unitarias
-      - name: Run Unit Tests
-        run: |
-          source venv/bin/activate
-          python manage.py test
-
-      # Step 5: Configurar SSH para EC2
+      # Step 2: Configurar SSH para EC2
       - name: Set up SSH
         env:
           PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
@@ -42,8 +23,8 @@ jobs:
           eval $(ssh-agent -s)
           ssh-add private_key
 
-      # Step 6: Desplegar y Reiniciar Gunicorn
-      - name: Deploy and Restart Gunicorn Service
+      # Step 3: Desplegar el código, activar entorno virtual, e instalar dependencias
+      - name: Deploy and Install Dependencies
         env:
           IP_ADDRESS: ${{ secrets.EC2_IP }}
           USER_NAME: ${{ secrets.EC2_USER }}
@@ -53,4 +34,26 @@ jobs:
           git fetch origin master &&
           git reset --hard FETCH_HEAD &&
           git clean -fd &&
+          source /home/ec2-user/PlataformaCursos/bin/activate &&  # Activar entorno virtual
+          pip install -r requirements.txt &&
+          python manage.py migrate'  # Ejecutar migraciones
+
+      # Step 4: Ejecutar las pruebas unitarias
+      - name: Run Unit Tests
+        env:
+          IP_ADDRESS: ${{ secrets.EC2_IP }}
+          USER_NAME: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
+          cd /home/ec2-user/PlataformaCursos &&
+          source /home/ec2-user/PlataformaCursos/bin/activate &&  # Activar entorno virtual
+          python manage.py test'
+
+      # Step 5: Reiniciar Gunicorn
+      - name: Restart Gunicorn Service
+        env:
+          IP_ADDRESS: ${{ secrets.EC2_IP }}
+          USER_NAME: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${IP_ADDRESS} '
           sudo systemctl restart plataformacursos.service'
