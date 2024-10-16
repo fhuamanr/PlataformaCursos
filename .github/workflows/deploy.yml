@@ -36,8 +36,9 @@ jobs:
           git clean -fd &&
           source /home/ec2-user/PlataformaCursos/PlataformaCursos/bin/activate &&
           cd /home/ec2-user/PlataformaCursos/plataforma_cursos &&
-          pip install -r requirements.txt &&
-          python manage.py migrate'
+          python manage.py migrate' &&
+          pip install -r requirements.txt
+          
 
       # Step 4: Ejecutar las pruebas unitarias desde la ruta correcta
       - name: Run Unit Tests
