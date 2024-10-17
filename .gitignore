@@ -55,3 +55,5 @@ build/
 # Ignorar la carpeta de medios
 /media/*
 !/media/cursos_imagenes
+
+/plataforma_cursos/ui/staticfiles/
