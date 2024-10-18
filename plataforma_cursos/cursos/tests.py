@@ -80,7 +80,6 @@ class UsuarioModelTest(TestCase):
 
 
 # Pruebas de paginación para cursos
-
 class CursoPaginationTest(TestCase):
 
     def setUp(self):
@@ -152,22 +151,22 @@ class AdminUserModelTest(TestCase):
 class CursoValidationTest(TestCase):
 
     def test_curso_empty_name(self):
-        with self.assertRaises(ValidationError):
-            curso_invalido = Curso(
+        # El curso debe tener un nombre válido
+        with self.assertRaises(ValueError):
+            Curso.objects.create(
                 nombre="",
                 descripcion="Descripción inválida",
                 total_paginas=50
             )
-            curso_invalido.clean()  # Llama manualmente a clean para validar
 
     def test_curso_total_paginas_invalid(self):
-        with self.assertRaises(ValidationError):
-            curso_invalido = Curso(
+        # El curso no debe tener páginas negativas
+        with self.assertRaises(ValueError):
+            Curso.objects.create(
                 nombre="Curso inválido",
                 descripcion="Descripción inválida",
                 total_paginas=-10  # Páginas totales no válidas
             )
-            curso_invalido.clean()  # Llama manualmente a clean para validar
 
     def test_progreso_avance_max_value(self):
         usuario = User.objects.create_user(username='testuser', password='12345')
