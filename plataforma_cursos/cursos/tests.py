@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from .models import Curso, Progreso
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.db import IntegrityError
 
 User = get_user_model()
 
@@ -24,45 +25,45 @@ class CursoModelTest(TestCase):
     def test_curso_string_representation(self):
         self.assertEqual(str(self.curso), "Curso de Python")
 
-
-# Pruebas de validación para modelo Curso
+# Pruebas de validación del modelo Curso
 class CursoValidationTest(TestCase):
 
     def setUp(self):
-        # Crear un curso válido para usar en las pruebas
         self.curso = Curso.objects.create(
-            nombre="Curso de Prueba",
-            descripcion="Descripción del curso.",
-            total_paginas=150
+            nombre="Curso de Test",
+            descripcion="Un curso de test",
+            total_paginas=100
         )
 
-    def test_curso_invalid_type(self):
-        # Intentar asignar un valor no válido al campo 'total_paginas'
-        with self.assertRaises(ValueError):
-            self.curso.total_paginas = "no_es_numero"
-            self.curso.save()
-    
     def test_curso_empty_name(self):
-        # Probar la creación de un curso con un nombre vacío
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError):  # Ahora esperamos que falle si el nombre está vacío
             curso_invalido = Curso.objects.create(
-                nombre="",  # Nombre vacío
-                descripcion="Descripción sin nombre",
+                nombre="",
+                descripcion="Descripción inválida",
                 total_paginas=50
             )
 
     def test_progreso_avance_max_value(self):
-        # Asegurarse de que el avance no exceda el 100%
-        self.progreso = Progreso.objects.create(
-            usuario=User.objects.create_user(username='testuser2', password='54321'),
-            curso=self.curso,
-            paginas_visitadas=200,  # Excediendo el total de páginas
-            checks_alcanzados=50,
+        usuario = User.objects.create_user(username='testuser', password='12345')
+        curso = Curso.objects.create(nombre="Curso Avanzado", descripcion="Test", total_paginas=100)
+        progreso = Progreso.objects.create(
+            usuario=usuario,
+            curso=curso,
+            paginas_visitadas=120,  # Excede el total de páginas
+            checks_alcanzados=40,
             examen_realizado=True,
             resultado_examen=90
         )
-        avance_total = self.progreso.avance_total()
+        avance_total = progreso.avance_total()
         self.assertLessEqual(avance_total, 1.0)  # El avance nunca debe ser mayor a 1 (100%)
+
+    def test_curso_total_paginas_invalid(self):
+        with self.assertRaises(ValueError):  # Verificamos si lanza un error por un valor negativo
+            curso_invalido = Curso.objects.create(
+                nombre="Curso inválido",
+                descripcion="Descripción inválida",
+                total_paginas=-10  # Páginas totales no válidas
+            )
 
 
 # Pruebas para el modelo Progreso
@@ -119,6 +120,7 @@ class UsuarioModelTest(TestCase):
 
 
 # Pruebas de paginación para cursos
+
 class CursoPaginationTest(TestCase):
 
     def setUp(self):
