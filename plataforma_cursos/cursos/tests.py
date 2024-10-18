@@ -149,4 +149,38 @@ class CursoSortingTest(TestCase):
     def setUp(self):
         self.curso1 = Curso.objects.create(nombre="Curso A", descripcion="Curso A Desc", total_paginas=200)
         self.curso2 = Curso.objects.create(nombre="Curso B", descripcion="Curso B Desc", total_paginas=100)
-        self.curso3 = Curso.objects.create​⬤
+        self.curso3 = Curso.objects.create(nombre="Curso C", descripcion="Curso C Desc", total_paginas=300)
+
+    def test_curso_sorting(self):
+        response = self.client.get(reverse('listado_cursos_ordenados') + '?ordenar=true')
+        cursos = list(response.context['cursos'])
+        self.assertEqual(cursos[0].total_paginas, 300)
+        self.assertEqual(cursos[1].total_paginas, 200)
+        self.assertEqual(cursos[2].total_paginas, 100)
+
+
+# Pruebas para el modelo de Usuario Administrador
+class AdminUserModelTest(TestCase):
+
+    def setUp(self):
+        self.admin_user = User.objects.create_superuser(
+            username="adminuser",
+            email="adminuser@example.com",
+            password="adminpassword123"
+        )
+
+    def test_admin_user_creation(self):
+        self.assertEqual(self.admin_user.username, "adminuser")
+        self.assertEqual(self.admin_user.email, "adminuser@example.com")
+        self.assertTrue(self.admin_user.is_staff)
+        self.assertTrue(self.admin_user.is_superuser)
+
+    def test_admin_user_authentication(self):
+        self.assertTrue(self.admin_user.check_password("adminpassword123"))
+
+    def test_admin_access(self):
+        login_successful = self.client.login(username='adminuser', password='adminpassword123')
+        self.assertTrue(login_successful)
+
+        response = self.client.get('/admin/')
+        self.assertEqual(response.status_code, 200)
